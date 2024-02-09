@@ -1,0 +1,6 @@
+@realto_HostAddress = http://localhost:5014
+
+GET {{realto_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
