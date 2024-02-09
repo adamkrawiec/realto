@@ -1,23 +1,28 @@
-var app = WebApplication.Create();
+using Microsoft.AspNetCore.Mvc;
+using RealEstates;
 
-Street[] streets = {
-    new Street("Bocianów"),
-    new Street("Labędzi"),
-    new Street("Kormoranów")
-};
+List<Street> streets = new List<Street>();
+streets.Add(new Street("Bocianów"));
+streets.Add(new Street("Labędzi"));
+streets.Add(new Street("Kormoranów"));
 
-City[] cities = {
-    new City("Katowice"),
-    new City("Tychy"),
-    new City("Kraków")
-};
+List<City> cities = new List<City>();
+cities.Add(new City("Katowice"));
+cities.Add(new City("Tychy"));
+cities.Add(new City("Kraków"));
 
-RealEstate[] realEstates = {
-    new RealEstate(new Address(streets[0], cities[0])),
-    new RealEstate(new Address(streets[1], cities[0])),
-    new RealEstate(new Address(streets[2], cities[0])),
-    new RealEstate(new Address(streets[0], cities[1])),
-};
+List<RealEstate> realEstates = new List<RealEstate>();
+realEstates.Add(new RealEstate(new Address(streets[0], cities[0])));
+realEstates.Add(new RealEstate(new Address(streets[1], cities[0])));
+realEstates.Add(new RealEstate(new Address(streets[2], cities[0])));
+realEstates.Add(new RealEstate(new Address(streets[0], cities[1])));
+
+
+var builder = WebApplication.CreateBuilder();
+builder.Services.AddAntiforgery();
+
+var app = builder.Build();
+app.UseAntiforgery();
 
 app.MapGet("/streets", () => {
     return streets;
@@ -31,46 +36,20 @@ app.MapGet("/real_estates", () => {
     return realEstates;
 });
 
+app.MapPost("/real_estates", ([FromForm] string streetName, [FromForm] string cityName) => {
+    Street? street = streets.Find(street => street.Name == streetName);
+    City? city = cities.Find(city => city.Name == cityName);
+
+    if (street != null && city != null) {
+        RealEstate realEstate = new RealEstate(new Address(street, city));
+        realEstates.Add(realEstate);
+    }
+    
+    return realEstates;
+}).DisableAntiforgery();
+
 app.MapGet("/real_estates/{id}", (int id) => {
-    return Array.Find(realEstates, realEstate => realEstate.Id == id);
+    return realEstates.Find(realEstate => realEstate.Id == id);
 });
 
 app.Run();
-
-class Street {
-    public string Name { get; set; }
-
-    public Street(string name) {
-        Name = name;
-    }
-}
-
-class City {
-    public string Name { get; set; }
-
-    public City(string name) {
-        Name = name;
-    }
-}
-
-class Address {
-    public Street Street { get; set; }
-    public City City { get; set; }
-
-    public Address(Street street, City city) {
-        Street = street;
-        City = city;
-    }
-}
-
-class RealEstate {
-    private static int _id = 0;
-    public int Id { get; }
-    public Address Address { get; set; }
-
-    public RealEstate(Address address) {
-        _id += 1;
-        Id = _id;
-        Address = address;
-    }
-}
