@@ -31,6 +31,15 @@ EstateUnit eu5 = new EstateUnit(2, sc2, 73.0f);
 
 List<EstateUnit> estateUnits = [eu1, eu2, eu3, eu4, eu5];
 
+DB db = DB.GetInstance();
+db.EstateUnits = estateUnits;
+db.Staircases = staircases;
+db.RealEstates = realEstates;
+db.Streets = streets;
+db.Cities = cities;
+
+RealEstateService realEstateService = new RealEstateService();
+
 var builder = WebApplication.CreateBuilder();
 builder.Services.AddAntiforgery();
 
@@ -49,38 +58,9 @@ app.MapGet("/real_estates", () => {
     return realEstates;
 });
 
-List<RealEstate> addRealEstate ([FromForm] string streetName, [FromForm] string cityName, [FromForm] float area) {
-    Street? street = streets.Find(street => street.Name == streetName);
-    City? city = cities.Find(city => city.Name == cityName);
-
-    if (street != null && city != null) {
-        RealEstate realEstate = new RealEstate(new Address(street, city), area);
-        realEstates.Add(realEstate);
-    }
-    
-    return realEstates;
-}
-
-
-RealEstateDTO findRealEstate (int id) {
-    RealEstate? realEstate = realEstates.Find(realEstate => realEstate.Id == id);
-    if(realEstate is null) return new RealEstateDTO();
-
-    List<Staircase> realEstateStaircases = staircases.FindAll(staircase => staircase.RealEstate.Id == id);
-    
-    List<StaircaseDTO> staircaseDTOs = realEstateStaircases.Select((staircase) => {
-        IEnumerable<EstateUnitDTO> estateUnitDTOs = estateUnits.
-            FindAll(estateUnit => estateUnit.Staircase == staircase).
-            Select(estateUnit => new EstateUnitDTO(estateUnit));
-        return new StaircaseDTO(staircase, estateUnitDTOs.ToList());
-    }).ToList();
-
-    return new RealEstateDTO(realEstate, staircaseDTOs.ToList());
-}
-
-app.MapPost("/real_estates", addRealEstate).DisableAntiforgery();
+app.MapPost("/real_estates", realEstateService.AddRealEstate).DisableAntiforgery();
 app.MapGet("/real_estates/{id}", (int id) => {
-    RealEstateDTO realEstate = findRealEstate(id);
+    RealEstateDTO realEstate = realEstateService.FindRealEstate(id);
 
     if (realEstate.Id is null) return Results.NotFound();
 
