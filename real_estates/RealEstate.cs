@@ -45,4 +45,18 @@ namespace RealEstates {
             Area = area;
         }
     }
+
+    class Tenant {
+        private static int _id = 0;
+        public int Id { get; }
+        public string Name { get; set; }
+        public EstateUnit EstateUnit { get; set; }
+
+        public Tenant(string name, EstateUnit estateUnit) {
+            _id += 1;
+            Id = _id;
+            Name = name;
+            EstateUnit = estateUnit;
+        }
+    }
 }

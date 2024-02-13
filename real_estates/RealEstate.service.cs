@@ -8,20 +8,29 @@ namespace RealEstates {
       db = DB.GetInstance();
     }
 
-    public RealEstateDTO FindRealEstate (int id) {
-      RealEstate? realEstate = db.RealEstates.Find(realEstate => realEstate.Id == id);
+    private StaircaseDTO presentStaircase(Staircase staircase) {
+      List<EstateUnitDTO> estateUnitDTOs = presentEstateUnits(staircase);
+      return new StaircaseDTO(staircase, estateUnitDTOs);
+    }
+    private List<EstateUnitDTO> presentEstateUnits(Staircase staircase) {
+      return db.EstateUnits.
+          FindAll(estateUnit => estateUnit.Staircase == staircase).
+          Select(estateUnit => new EstateUnitDTO(estateUnit)).
+          ToList();
+
+    }
+    public RealEstateDTO presentRealEstate (RealEstate realEstate) {
       if(realEstate is null) return new RealEstateDTO();
 
-      List<Staircase> realEstateStaircases = db.Staircases.FindAll(staircase => staircase.RealEstate.Id == id);
+      List<Staircase> staircases = db.Staircases.FindAll(staircase => staircase.RealEstate.Id == realEstate.Id);
       
-      List<StaircaseDTO> staircaseDTOs = realEstateStaircases.Select((staircase) => {
-          IEnumerable<EstateUnitDTO> estateUnitDTOs = db.EstateUnits.
-              FindAll(estateUnit => estateUnit.Staircase == staircase).
-              Select(estateUnit => new EstateUnitDTO(estateUnit));
-          return new StaircaseDTO(staircase, estateUnitDTOs.ToList());
-      }).ToList();
+      List<StaircaseDTO> staircaseDTOs = staircases.Select((staircase) => presentStaircase(staircase)).ToList();
 
-      return new RealEstateDTO(realEstate, staircaseDTOs.ToList());
+      return new RealEstateDTO(realEstate, staircaseDTOs);
+    }
+
+    public EstateUnitDTO presentEstateUnit (EstateUnit estateUnit) {
+      return new EstateUnitDTO(estateUnit);
     }
 
     public List<RealEstate> AddRealEstate ([FromForm] string streetName, [FromForm] string cityName, [FromForm] float area) {
