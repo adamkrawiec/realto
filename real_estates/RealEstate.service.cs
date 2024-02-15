@@ -8,28 +8,12 @@ namespace RealEstates {
       db = DB.GetInstance();
     }
 
-    private StaircaseDTO presentStaircase(Staircase staircase) {
-      List<EstateUnitDTO> estateUnitDTOs = presentEstateUnits(staircase);
-      return new StaircaseDTO(staircase, estateUnitDTOs);
-    }
-    private List<EstateUnitDTO> presentEstateUnits(Staircase staircase) {
-      return db.EstateUnits.
-          FindAll(estateUnit => estateUnit.Staircase == staircase).
-          Select(estateUnit => new EstateUnitDTO(estateUnit)).
-          ToList();
 
-    }
-    public RealEstateDTO presentRealEstate (RealEstate realEstate) {
-      if(realEstate is null) return new RealEstateDTO();
-
-      List<Staircase> staircases = db.Staircases.FindAll(staircase => staircase.RealEstate.Id == realEstate.Id);
-      
-      List<StaircaseDTO> staircaseDTOs = staircases.Select((staircase) => presentStaircase(staircase)).ToList();
-
-      return new RealEstateDTO(realEstate, staircaseDTOs);
+    public RealEstateDTO PresentRealEstate (RealEstate realEstate) {
+      return new RealEstatePresenter(realEstate).Present();
     }
 
-    public EstateUnitDTO presentEstateUnit (EstateUnit estateUnit) {
+    public EstateUnitDTO PresentEstateUnit (EstateUnit estateUnit) {
       return new EstateUnitDTO(estateUnit);
     }
 

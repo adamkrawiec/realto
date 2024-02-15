@@ -19,7 +19,7 @@ namespace RealEstates {
 
           if (realEstate is null) return Results.NotFound();
 
-          return Results.Ok(realEstateService.presentRealEstate(realEstate));
+          return Results.Ok(realEstateService.PresentRealEstate(realEstate));
       });
 
       App.MapGet("/estate_units/{id}/", (int id) => {
@@ -27,7 +27,7 @@ namespace RealEstates {
 
           if (estateUnit is null) return Results.NotFound();
 
-          return Results.Ok(realEstateService.presentEstateUnit(estateUnit));
+          return Results.Ok(realEstateService.PresentEstateUnit(estateUnit));
       });
 
     }
