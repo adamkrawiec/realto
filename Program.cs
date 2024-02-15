@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using RealEstates;
+using DB;
 
-DB db = DB.GetInstance();
+DBClient db = DBClient.GetInstance();
 db.loadData();
 
 RealEstateService realEstateService = new RealEstateService();

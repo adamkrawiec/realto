@@ -1,3 +1,5 @@
+using RealEstates.Models;
+
 namespace RealEstates {
 
     class RealEstateDTO {

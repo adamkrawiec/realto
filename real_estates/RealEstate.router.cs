@@ -1,7 +1,10 @@
+using RealEstates.Models;
+using DB;
+
 namespace RealEstates {
   public class RealEstateRouter {
     private WebApplication App;
-    private DB db = DB.GetInstance();
+    private DBClient db = DBClient.GetInstance();
     private RealEstateService realEstateService = new RealEstateService();
 
     public RealEstateRouter(WebApplication app) {

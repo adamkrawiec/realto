@@ -1,30 +1,43 @@
-namespace RealEstates {
-  class DB {
+using RealEstates.Models;
+
+namespace DB {
+  class DBClient {
     public List<RealEstate> RealEstates { get; set; }
     public List<Staircase> Staircases { get; set; }
     public List<EstateUnit> EstateUnits { get; set; }
     public List<Street> Streets { get; set; }
     public List<City> Cities { get; set; }
 
-    private DB() { 
+    private DBClient() { 
         RealEstates = new List<RealEstate>();
         Staircases = new List<Staircase>();
         EstateUnits = new List<EstateUnit>();
         Streets = new List<Street>();
         Cities = new List<City>();
     }
-    private static DB _instance;
+    private static DBClient _instance;
 
-    public static DB GetInstance()
+    public static DBClient GetInstance()
     {
         if (_instance == null)
         {
-            _instance = new DB();
+            _instance = new DBClient();
         }
         return _instance;
     }
 
     public void loadData() {
+      // path to the csv file
+      // string path = "C:/Users/overl/Desktop/people.csv";
+
+      // string[] lines = System.IO.File.ReadAllLines(path);
+      // foreach(string line in lines)
+      // {
+      //     string[] columns = line.Split(',');
+      //     foreach (string column in columns) {
+      //         // Do something
+      //     }
+      // }
       List<Street> streets = new List<Street>();
       streets.Add(new Street("Bocianów"));
       streets.Add(new Street("Labędzi"));
@@ -35,11 +48,11 @@ namespace RealEstates {
       cities.Add(new City("Tychy"));
       cities.Add(new City("Kraków"));
 
-      RealEstate re1 = new RealEstate(new Address(streets[0], cities[0]), 520);
+      RealEstate re1 = new RealEstate(new Address(streets[0], cities[0]), 520, 1);
       List<RealEstate> realEstates = [re1];
-      realEstates.Add(new RealEstate(new Address(streets[1], cities[0]), 630));
-      realEstates.Add(new RealEstate(new Address(streets[2], cities[0]), 820));
-      realEstates.Add(new RealEstate(new Address(streets[0], cities[1]), 440));
+      realEstates.Add(new RealEstate(new Address(streets[1], cities[0]), 630, 1));
+      realEstates.Add(new RealEstate(new Address(streets[2], cities[0]), 820, 1));
+      realEstates.Add(new RealEstate(new Address(streets[0], cities[1]), 440, 1));
 
       Staircase sc1 = new Staircase(1, re1);
       Staircase sc2 = new Staircase(2, re1);

@@ -1,14 +1,18 @@
+using DB;
+using RealEstates.Models;
+
 namespace RealEstates {
   class RealEstatePresenter {
     private readonly RealEstate? _realEstate;
     private readonly List<Staircase> _staircases;
+    private DBClient db = DBClient.GetInstance();
 
     public RealEstatePresenter() {
       _staircases = [];
     }
     public RealEstatePresenter(RealEstate realEstate) {
       _realEstate = realEstate;
-      _staircases = DB.GetInstance().Staircases.FindAll(staircase => staircase.RealEstate.Id == _realEstate.Id);
+      _staircases = db.Staircases.FindAll(staircase => staircase.RealEstate.Id == _realEstate.Id);
     }
 
     public RealEstateDTO Present() {
@@ -23,10 +27,11 @@ namespace RealEstates {
   class StaircasePresenter {
     private readonly Staircase _staircase;
     private readonly List<EstateUnit> _estateUnits;
+    private DBClient db = DBClient.GetInstance();
 
     public StaircasePresenter(Staircase staircase) {
       _staircase = staircase;
-      _estateUnits = DB.GetInstance().EstateUnits.FindAll(estateUnit => estateUnit.Staircase == _staircase);
+      _estateUnits = db.EstateUnits.FindAll(estateUnit => estateUnit.Staircase == _staircase);
     }
 
     public StaircaseDTO Present() {
