@@ -5,15 +5,16 @@ namespace RealEstates {
         public int Id { get; }
 
         public int Number { get; set; }
-        public Staircase Staircase { get; set; }
+
+        public RealEstate RealEstate { get; set; }
 
         public float Area { get; set; }
 
-        public EstateUnit(int number, Staircase staircase, float area) {
+        public EstateUnit(RealEstate realEstate, int number, float area) {
             _id += 1;
             Id = _id;
+            RealEstate = realEstate;
             Number = number;
-            Staircase = staircase;
             Area = area;
         }
     }

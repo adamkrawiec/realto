@@ -1,0 +1,10 @@
+Id,EstateUnitId,Name,MovedInAt,MovedOutAt
+1,1,Adam Krawiec,1/1/2022,
+2,2,John Doe,1/1/2020,31/12/2022
+3,2,Alexander Dupoint,1/1/2023,
+4,3,Cynthia Black,1/1/2020,31/5/2023
+5,4,Johne Dee,1/1/2018,31/12/2021
+6,4,Rebecca,1/1/2022,30/6/2022
+7,4,Cathlin,1/7/2022,
+8,5,Hiro,1/5/2022,
+9,6,Thomas,1/1/2023,

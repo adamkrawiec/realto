@@ -1,76 +1,114 @@
 using RealEstates.Models;
 
 namespace DB {
-  class DBClient {
-    public List<RealEstate> RealEstates { get; set; }
-    public List<Staircase> Staircases { get; set; }
-    public List<EstateUnit> EstateUnits { get; set; }
-    public List<Street> Streets { get; set; }
-    public List<City> Cities { get; set; }
+    class DBClient {
+        public List<RealEstate> RealEstates { get; set; }
+        public List<Staircase> Staircases { get; set; }
+        public List<EstateUnit> EstateUnits { get; set; }
+        public List<Street> Streets { get; set; }
+        public List<City> Cities { get; set; }
+        public List<Tenant> Tenants { get; set; }
 
-    private DBClient() { 
-        RealEstates = new List<RealEstate>();
-        Staircases = new List<Staircase>();
-        EstateUnits = new List<EstateUnit>();
-        Streets = new List<Street>();
-        Cities = new List<City>();
-    }
-    private static DBClient _instance;
-
-    public static DBClient GetInstance()
-    {
-        if (_instance == null)
-        {
-            _instance = new DBClient();
+        private static DBClient _instance;
+        
+        private DBClient() { 
+            RealEstates = new List<RealEstate>();
+            Staircases = new List<Staircase>();
+            EstateUnits = new List<EstateUnit>();
+            Streets = new List<Street>();
+            Cities = new List<City>();
+            Tenants = new List<Tenant>();
         }
-        return _instance;
-    }
 
-    public void loadData() {
-      // path to the csv file
-      // string path = "C:/Users/overl/Desktop/people.csv";
+        public static DBClient GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new DBClient();
+            }
+            return _instance;
+        }
 
-      // string[] lines = System.IO.File.ReadAllLines(path);
-      // foreach(string line in lines)
-      // {
-      //     string[] columns = line.Split(',');
-      //     foreach (string column in columns) {
-      //         // Do something
-      //     }
-      // }
-      List<Street> streets = new List<Street>();
-      streets.Add(new Street("Bocianów"));
-      streets.Add(new Street("Labędzi"));
-      streets.Add(new Street("Kormoranów"));
+        public void loadData() {
+            List<Street> streets = new List<Street>();
+            streets.Add(new Street("Bocianów"));
+            streets.Add(new Street("Labędzi"));
+            streets.Add(new Street("Kormoranów"));
 
-      List<City> cities = new List<City>();
-      cities.Add(new City("Katowice"));
-      cities.Add(new City("Tychy"));
-      cities.Add(new City("Kraków"));
+            List<City> cities = new List<City>();
+            cities.Add(new City("Katowice"));
+            cities.Add(new City("Tychy"));
+            cities.Add(new City("Kraków"));
 
-      RealEstate re1 = new RealEstate(new Address(streets[0], cities[0]), 520, 1);
-      List<RealEstate> realEstates = [re1];
-      realEstates.Add(new RealEstate(new Address(streets[1], cities[0]), 630, 1));
-      realEstates.Add(new RealEstate(new Address(streets[2], cities[0]), 820, 1));
-      realEstates.Add(new RealEstate(new Address(streets[0], cities[1]), 440, 1));
+            Streets = streets;
+            Cities = cities; 
+        
+            loadRealEstates();
+            loadEstateUnits();
+            loadTenants();
+        }
 
-      Staircase sc1 = new Staircase(1, re1);
-      Staircase sc2 = new Staircase(2, re1);
-      List<Staircase> staircases = [sc1, sc2];
+        private void loadRealEstates() {
+            string path = "./Database/real_estates.csv";
+            List<RealEstate> realEstates = [];
 
-      EstateUnit eu1 = new EstateUnit(1, sc1, 44.0f);
-      EstateUnit eu2 = new EstateUnit(2, sc1, 56.0f);
-      EstateUnit eu3 = new EstateUnit(1, sc2, 44.0f);
-      EstateUnit eu4 = new EstateUnit(2, sc2, 56.0f);
-      EstateUnit eu5 = new EstateUnit(2, sc2, 73.0f);
 
-      List<EstateUnit> estateUnits = [eu1, eu2, eu3, eu4, eu5];
+            string[] lines = System.IO.File.ReadAllLines(path);
+            foreach(string line in lines.Skip(1))
+            {
+                string[] columns = line.Split(',');
+                int realEstateId = Int32.Parse(columns[0]);
+                string cityName = columns[1];
+                string streetName = columns[2];
+                int number = Int32.Parse(columns[3]);
+                int area = Int32.Parse(columns[4]);
+                Street street = Streets.Find(street => street.Name == streetName);
+                City city = Cities.Find(city => city.Name == cityName);
+                realEstates.Add(new RealEstate(new Address(street, city), area, number));
+            }
+            RealEstates = realEstates;
+        }
 
-      EstateUnits = estateUnits;
-      Staircases = staircases;
-      RealEstates = realEstates;
-      Streets = streets;
-      Cities = cities; 
-    }
+        private void loadEstateUnits() {
+            string path = "./Database/estate_units.csv";
+            List<EstateUnit> estateUnits = [];
+
+            string[] lines = System.IO.File.ReadAllLines(path);
+            foreach(string line in lines.Skip(1))
+            {
+                string[] columns = line.Split(',');
+                int realEstateId = Int32.Parse(columns[1]);
+                int number = Int32.Parse(columns[2]);
+                int area = Int32.Parse(columns[3]);
+                RealEstate realEstate = RealEstates.Find(realEstate => realEstate.Id == realEstateId);
+
+                estateUnits.Add(new EstateUnit(realEstate, number, area));
+            }
+            EstateUnits = estateUnits;
+        }
+
+        private void loadTenants() {
+            string path = "./Database/tenants.csv";
+            List<Tenant> tenants = [];
+
+            string[] lines = System.IO.File.ReadAllLines(path);
+            foreach(string line in lines.Skip(1))
+            {
+                string[] columns = line.Split(',');
+                int estateUnitId = Int32.Parse(columns[1]);
+                string name = columns[2];
+                DateTime movedInAt = DateTime.Parse(columns[3]);
+                DateTime? movedOutAt = null;
+                try {
+                    movedOutAt = DateTime.Parse(columns[4]);
+                } catch (FormatException) {
+                    movedOutAt = null;
+                }
+                EstateUnit estateUnit = EstateUnits.Find(estateUnit => estateUnit.Id == estateUnitId);
+
+                tenants.Add(new Tenant(name, estateUnit, movedInAt, movedOutAt));
+            }
+            Tenants = tenants;
+        }
   }
 }
