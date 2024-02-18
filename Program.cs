@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using RealEstates;
 using DB;
 
@@ -15,7 +14,7 @@ var app = builder.Build();
 app.UseAntiforgery();
 
 app.MapControllerRoute(
-    name: "welcome",
+    name: "default",
     pattern: "{controller=Hello}/{action=Index}/{id?}"
 );
 app.Run();

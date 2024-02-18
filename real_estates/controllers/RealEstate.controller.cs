@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using RealEstates.Models;
 
 namespace RealEstates.Controllers
 {
@@ -21,11 +20,11 @@ namespace RealEstates.Controllers
         [HttpGet("/real_estates/{id}")]
         public IActionResult Show(int id)
         {
-            RealEstate? realEstate = _realEstateService.FindRealEstate(id);
+            RealEstateDTO? realEstate = _realEstateService.PresentRealEstate(id);
 
             if (realEstate is null) return NotFound();
 
-            return Ok(_realEstateService.PresentRealEstate(realEstate));
+            return Ok(realEstate);
         }
     }
 }

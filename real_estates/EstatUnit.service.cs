@@ -16,12 +16,14 @@ namespace RealEstates {
       return db.EstateUnits;
     }
 
-    public EstateUnit? FindEstateUnit(int estateUnitId) {
-      return db.EstateUnits.Find(estateUnit => estateUnit.Id == estateUnitId);
-    }
+    public EstateUnitDTO? PresentEstateUnit (int estateUnitId) {
+      EstateUnit? estateUnit = db.EstateUnits.Find(estateUnit => estateUnit.Id == estateUnitId);
+      
+      if (estateUnit != null) {
+        return new EstateUnitDTO(estateUnit);
+      }
 
-    public EstateUnitDTO PresentEstateUnit (EstateUnit estateUnit) {
-      return new EstateUnitDTO(estateUnit);
+      return null;
     }
   }
 }

@@ -19,8 +19,14 @@ namespace RealEstates {
             return db.RealEstates.Find(realEstate => realEstate.Id == realEstateId);
         }
 
-        public RealEstateDTO PresentRealEstate (RealEstate realEstate) {
-            return new RealEstatePresenter(realEstate).Present();
+        public RealEstateDTO? PresentRealEstate (int realEstateId) {
+            RealEstate realEstate = db.RealEstates.Find(realEstate => realEstate.Id == realEstateId);
+            if(realEstate != null)
+            {
+                return new RealEstatePresenter(realEstate).Present();
+            }
+
+            return null;
         }
 
         public List<RealEstate> AddRealEstate (string streetName, string cityName, float area, int number) {
