@@ -10,8 +10,10 @@ var builder = WebApplication.CreateBuilder();
 builder.Services.AddAntiforgery();
 builder.Services.AddControllers();
 
+
 var app = builder.Build();
 app.UseAntiforgery();
+app.MapControllers();
 
 app.MapControllerRoute(
     name: "default",

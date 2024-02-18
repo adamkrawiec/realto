@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using RealEstates.Models;
 
 namespace RealEstates {
@@ -7,6 +9,8 @@ namespace RealEstates {
         public string? City { get; }
         public string? Street { get; }
         public List<EstateUnitDTO>? EstateUnits { get; }
+
+        public string? ShowPath { get; set; }
 
         public RealEstateDTO() { 
             Id = null;
@@ -32,15 +36,18 @@ namespace RealEstates {
     };
 
     class EstateUnitDTO {
-        public int Id { get; set; }
+        public int Id { get; }
 
-        public int Number { get; set; }
+        public int Number { get; }
 
-        public float Area { get; set; }
+        public float Area { get; }
         
-        public string Address { get; set; }
+        public string Address { get; }
 
-        public TenantDTO? CurrentTenant { get; set; }
+        public TenantDTO? CurrentTenant { get; }
+
+        public string? ShowPath { get; set; }
+        public string? TenantsPath { get; set; }
 
         public EstateUnitDTO(EstateUnit estateUnit) {
             Id = estateUnit.Id;
@@ -49,19 +56,19 @@ namespace RealEstates {
             Address = $"{estateUnit.RealEstate.Address.City.Name}, {estateUnit.RealEstate.Address.Street.Name} {estateUnit.RealEstate.Number}/{estateUnit.Number}";
             CurrentTenant = estateUnit.CurrentTenant() == null ? null : new TenantDTO(estateUnit.CurrentTenant());
         }
+    }
 
-        public class TenantDTO {
-            public int? Id { get; set; }
-            public string? Name { get; set; }
-            public DateTime? MovedInAt { get; set; }
-            public DateTime? MovedOutAt { get; set; }
+    public class TenantDTO {
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+        public DateTime? MovedInAt { get; set; }
+        public DateTime? MovedOutAt { get; set; }
 
-            public TenantDTO(Tenant tenant) {
-                Id = tenant.Id;
-                Name = tenant.Name;
-                MovedInAt = tenant.MovedInAt;
-                MovedOutAt = tenant.MovedOutAt;
-            }
+        public TenantDTO(Tenant tenant) {
+            Id = tenant.Id;
+            Name = tenant.Name;
+            MovedInAt = tenant.MovedInAt;
+            MovedOutAt = tenant.MovedOutAt;
         }
     }
 }

@@ -11,34 +11,42 @@ namespace RealEstates {
             db = DBClient.GetInstance();
         }
 
-        public List<RealEstate> GetAllRealEstates () {
-            return db.RealEstates;
+        public List<RealEstateDTO> GetAllRealEstates () {
+            return db.RealEstates.Select(realEstate => new RealEstateDTO(realEstate)).ToList();
         }
 
         public RealEstate? FindRealEstate(int realEstateId) {
-            return db.RealEstates.Find(realEstate => realEstate.Id == realEstateId);
+            return findRealEstate(realEstateId);
         }
 
         public RealEstateDTO? PresentRealEstate (int realEstateId) {
-            RealEstate realEstate = db.RealEstates.Find(realEstate => realEstate.Id == realEstateId);
-            if(realEstate != null)
-            {
-                return new RealEstatePresenter(realEstate).Present();
-            }
+            RealEstate? realEstate = findRealEstate(realEstateId);
+            
+            if(realEstate == null)  return null;
+            
+            List<EstateUnitDTO> estateUnits = db.EstateUnits.
+              FindAll(estateUnit => estateUnit.RealEstate.Id == realEstateId).
+              Select(estateUnit => new EstateUnitDTO(estateUnit)).
+              ToList();
 
-            return null;
+            return new RealEstateDTO(realEstate, estateUnits);
         }
 
-        public List<RealEstate> AddRealEstate (string streetName, string cityName, float area, int number) {
+        public RealEstateDTO? AddRealEstate (string streetName, string cityName, float area, int? number) {
             Street? street = db.Streets.Find(street => street.Name == streetName);
             City? city = db.Cities.Find(city => city.Name == cityName);
 
-            if (street != null && city != null) {
-                RealEstate realEstate = new RealEstate(new Address(street, city), area, number);
-                db.RealEstates.Add(realEstate);
+            if (street == null || city == null || number == null) {
+                return null;
             }
-      
-        return db.RealEstates;
+
+            RealEstate realEstate = new RealEstate(new Address(street, city), area, number.Value);
+            db.RealEstates.Add(realEstate); 
+            return new RealEstateDTO(realEstate);
+        }
+
+        private RealEstate? findRealEstate(int realEstateId) {
+            return db.RealEstates.Find(realEstate => realEstate.Id == realEstateId);
         }
     }
 }

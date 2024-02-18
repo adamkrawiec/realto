@@ -8,13 +8,21 @@ namespace RealEstates.Controllers
         
         [HttpPost("/real_estates")]
         public IActionResult create(string streetName, string cityName, float area, int number) {
-            return Ok(_realEstateService.AddRealEstate(streetName, cityName, area, number));
+            RealEstateDTO? realEstate = _realEstateService.AddRealEstate(streetName, cityName, area, number);
+            if (realEstate is null) return BadRequest();
+
+            return Ok(realEstate);
         }
 
         [HttpGet("/real_estates")]
         public IActionResult Index()
         {
-            return Ok(_realEstateService.GetAllRealEstates());
+            List<RealEstateDTO> realEstates = _realEstateService.GetAllRealEstates();
+            realEstates.ForEach(realEstate =>
+                realEstate.ShowPath = Url.Action("Show", "RealEstate", new { id = realEstate.Id })
+            );
+            
+            return Ok(realEstates);
         }
 
         [HttpGet("/real_estates/{id}")]
@@ -24,6 +32,9 @@ namespace RealEstates.Controllers
 
             if (realEstate is null) return NotFound();
 
+            realEstate.EstateUnits.ForEach(estateUnit =>
+                estateUnit.ShowPath = Url.Action("Show", "EstateUnit", new { id = estateUnit.Id })
+            );
             return Ok(realEstate);
         }
     }
