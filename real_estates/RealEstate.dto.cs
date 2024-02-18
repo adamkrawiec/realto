@@ -36,25 +36,37 @@ namespace RealEstates {
     };
 
     class EstateUnitDTO {
-        public int Id { get; }
+        public int Id { 
+            get { return _estateUnit.Id; }
+        }
 
-        public int Number { get; }
+        public int Number {
+            get { return _estateUnit.Number; }
+        }
 
-        public float Area { get; }
+        public float Area {
+            get { return _estateUnit.Area; }
+        }
         
-        public string Address { get; }
+        public string Address {
+            get {
+                return $"{_estateUnit.RealEstate.Address.City.Name}, {_estateUnit.RealEstate.Address.Street.Name} {_estateUnit.RealEstate.Number}/{_estateUnit.Number}";
+            }
+        }
 
-        public TenantDTO? CurrentTenant { get; }
+        public TenantDTO? CurrentTenant {
+            get {
+                Tenant? tenant = _estateUnit.CurrentTenant();
+                return tenant == null ? null : new TenantDTO(tenant);
+            }
+        }
 
         public string? ShowPath { get; set; }
         public string? TenantsPath { get; set; }
 
+        private EstateUnit _estateUnit;
         public EstateUnitDTO(EstateUnit estateUnit) {
-            Id = estateUnit.Id;
-            Number = estateUnit.Number;
-            Area = estateUnit.Area;
-            Address = $"{estateUnit.RealEstate.Address.City.Name}, {estateUnit.RealEstate.Address.Street.Name} {estateUnit.RealEstate.Number}/{estateUnit.Number}";
-            CurrentTenant = estateUnit.CurrentTenant() == null ? null : new TenantDTO(estateUnit.CurrentTenant());
+            _estateUnit = estateUnit;
         }
     }
 
