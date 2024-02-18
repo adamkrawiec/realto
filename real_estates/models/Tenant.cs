@@ -1,3 +1,4 @@
+using DB;
 using Utils;
 
 namespace RealEstates {
@@ -26,6 +27,9 @@ namespace RealEstates {
         public bool otherTenatOverlaps(Tenant otherTenant) {
             return Period().Overlap(otherTenant.Period());
         }
+
+        public Tenant? PreviousTenant() {
+          return DBClient.GetInstance().Tenants.FindAll(tenant => tenant.EstateUnit == EstateUnit).OrderBy(t => t.MovedInAt).ToList().Find(tenant => tenant.MovedOutAt < MovedInAt);}
     }
   }
 }

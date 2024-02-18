@@ -2,7 +2,6 @@ using RealEstates.Models;
 using DB;
 
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices;
 
 namespace RealEstates {
   class RealEstateService {
@@ -13,12 +12,16 @@ namespace RealEstates {
     }
 
 
-    public RealEstateDTO PresentRealEstate (RealEstate realEstate) {
-      return new RealEstatePresenter(realEstate).Present();
+    public List<RealEstate> GetAllRealEstates () {
+      return db.RealEstates;
     }
 
-    public EstateUnitDTO PresentEstateUnit (EstateUnit estateUnit) {
-      return new EstateUnitDTO(estateUnit);
+    public RealEstate? FindRealEstate(int realEstateId) {
+      return db.RealEstates.Find(realEstate => realEstate.Id == realEstateId);
+    }
+
+    public RealEstateDTO PresentRealEstate (RealEstate realEstate) {
+      return new RealEstatePresenter(realEstate).Present();
     }
 
     public List<RealEstate> AddRealEstate ([FromForm] string streetName, [FromForm] string cityName, [FromForm] float area, [FromForm] int number) {

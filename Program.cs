@@ -9,19 +9,22 @@ RealEstateService realEstateService = new RealEstateService();
 
 var builder = WebApplication.CreateBuilder();
 builder.Services.AddAntiforgery();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 app.UseAntiforgery();
 
-app.MapGet("/streets", () => {
-    return db.Streets;
-});
 
-app.MapGet("/cities", () => {
-    return db.Cities;
-});
-
+AddressRouter addressRouter = new AddressRouter(app);
+EstateUnitRouter estateUnitRouter = new EstateUnitRouter(app);
 RealEstateRouter realEstateRouter = new RealEstateRouter(app);
+
+addressRouter.AddProgram();
+estateUnitRouter.AddProgram();
 realEstateRouter.AddProgram();
 
+app.MapControllerRoute(
+    name: "welcome",
+    pattern: "{controller=Hello}/{action=Index}/{id?}"
+);
 app.Run();

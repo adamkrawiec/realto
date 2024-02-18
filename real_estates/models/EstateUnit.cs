@@ -1,3 +1,5 @@
+using DB;
+
 namespace RealEstates {
   namespace Models {
     public class EstateUnit {
@@ -16,6 +18,10 @@ namespace RealEstates {
             RealEstate = realEstate;
             Number = number;
             Area = area;
+        }
+
+        public Tenant? CurrentTenant() {
+          return DBClient.GetInstance().Tenants.Find(tenant => tenant.EstateUnit == this && tenant.MovedOutAt == null);
         }
     }
   }

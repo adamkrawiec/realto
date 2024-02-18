@@ -1,7 +1,7 @@
 using RealEstates.Models;
 
 namespace DB {
-    class DBClient {
+    public class DBClient {
         public List<RealEstate> RealEstates { get; set; }
         public List<Staircase> Staircases { get; set; }
         public List<EstateUnit> EstateUnits { get; set; }
