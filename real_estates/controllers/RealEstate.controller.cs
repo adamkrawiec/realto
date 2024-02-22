@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RealEstates.Controllers
 {
+    [Route("/real_estates")]
     public class RealEstateController : Controller {
 
         private readonly RealEstateService _realEstateService = new RealEstateService();
         
-        [HttpPost("/real_estates")]
+        [HttpPost]
         public IActionResult create(string streetName, string cityName, float area, int number) {
             RealEstateDTO? realEstate = _realEstateService.AddRealEstate(streetName, cityName, area, number);
             if (realEstate is null) return BadRequest();
@@ -14,10 +15,10 @@ namespace RealEstates.Controllers
             return Ok(realEstate);
         }
 
-        [HttpGet("/real_estates")]
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index(string? city, string? street, int? number)
         {
-            List<RealEstateDTO> realEstates = _realEstateService.GetAllRealEstates();
+            List<RealEstateDTO> realEstates = _realEstateService.GetAllRealEstates(city, street, number);
             realEstates.ForEach(realEstate =>
                 realEstate.ShowPath = Url.Action("Show", "RealEstate", new { id = realEstate.Id })
             );
@@ -25,7 +26,7 @@ namespace RealEstates.Controllers
             return Ok(realEstates);
         }
 
-        [HttpGet("/real_estates/{id}")]
+        [HttpGet("/{id}")]
         public IActionResult Show(int id)
         {
             RealEstateDTO? realEstate = _realEstateService.PresentRealEstate(id);

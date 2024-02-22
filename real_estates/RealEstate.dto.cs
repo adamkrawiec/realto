@@ -8,6 +8,7 @@ namespace RealEstates {
         public int? Id { get; }
         public string? City { get; }
         public string? Street { get; }
+        public int? Number { get; }
         public List<EstateUnitDTO>? EstateUnits { get; }
 
         public string? ShowPath { get; set; }
@@ -17,6 +18,7 @@ namespace RealEstates {
         }
         public RealEstateDTO(RealEstate realEstate, List<EstateUnitDTO>? estateUnits = null) {
             Id = realEstate.Id;
+            Number = realEstate.Number;
             City = realEstate.Address.City.Name;
             Street = realEstate.Address.Street.Name;
             EstateUnits = estateUnits is null ? [] : estateUnits;

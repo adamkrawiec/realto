@@ -11,8 +11,27 @@ namespace RealEstates {
             db = DBClient.GetInstance();
         }
 
-        public List<RealEstateDTO> GetAllRealEstates () {
-            return db.RealEstates.Select(realEstate => new RealEstateDTO(realEstate)).ToList();
+        public List<RealEstateDTO> GetAllRealEstates (string? city, string? street, int? number) {
+            IEnumerable<RealEstate> realEstates = db.RealEstates;
+            if(city != null) {
+                realEstates = from realEstate in realEstates
+                    where string.Equals(realEstate.Address.City.Name, city, StringComparison.OrdinalIgnoreCase)
+                    select realEstate;
+            }
+
+            if(street != null) {
+                realEstates = from realEstate in realEstates
+                    where string.Equals(realEstate.Address.Street.Name, street, StringComparison.OrdinalIgnoreCase)
+                    select realEstate;
+            }
+
+            if(number != null) {
+                realEstates = from realEstate in realEstates
+                    where realEstate.Number == number
+                    select realEstate;
+            } 
+
+            return realEstates.ToList().Select(realEstate => new RealEstateDTO(realEstate)).ToList();
         }
 
         public RealEstate? FindRealEstate(int realEstateId) {
