@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using RealEstates.Models;
 
 namespace DB {
@@ -9,25 +10,19 @@ namespace DB {
         public List<City> Cities { get; set; }
         public List<Tenant> Tenants { get; set; }
 
-        private static DBClient _instance;
+        private readonly AppDBContext? _context;
         
-        private DBClient() { 
+        public DBClient(AppDBContext? context) { 
             RealEstates = new List<RealEstate>();
             Staircases = new List<Staircase>();
             EstateUnits = new List<EstateUnit>();
             Streets = new List<Street>();
             Cities = new List<City>();
             Tenants = new List<Tenant>();
+            _context = context;
         }
 
-        public static DBClient GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new DBClient();
-            }
-            return _instance;
-        }
+
 
         public void loadData() {
             List<Street> streets = new List<Street>();
@@ -43,9 +38,9 @@ namespace DB {
             Streets = streets;
             Cities = cities; 
         
-            loadRealEstates();
-            loadEstateUnits();
-            loadTenants();
+            // loadRealEstates();
+            // loadEstateUnits();
+            // loadTenants();
         }
 
         private void loadRealEstates() {
@@ -58,13 +53,12 @@ namespace DB {
             {
                 string[] columns = line.Split(',');
                 int realEstateId = Int32.Parse(columns[0]);
-                string cityName = columns[1];
-                string streetName = columns[2];
+                string city= columns[1];
+                string street = columns[2];
                 int number = Int32.Parse(columns[3]);
                 int area = Int32.Parse(columns[4]);
-                Street street = Streets.Find(street => street.Name == streetName);
-                City city = Cities.Find(city => city.Name == cityName);
-                realEstates.Add(new RealEstate(new Address(street, city), area, number));
+                _context.RealEstates.Add(new RealEstate(city, street, area, number));
+                _context.SaveChanges();
             }
             RealEstates = realEstates;
         }
