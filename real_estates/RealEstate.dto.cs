@@ -5,7 +5,7 @@ using RealEstates.Models;
 namespace RealEstates {
 
     class RealEstateDTO {
-        public int? Id { get; }
+        public long? Id { get; }
         public string? City { get; }
         public string? Street { get; }
         public List<EstateUnitDTO>? EstateUnits { get; }
@@ -17,8 +17,8 @@ namespace RealEstates {
         }
         public RealEstateDTO(RealEstate realEstate, List<EstateUnitDTO>? estateUnits = null) {
             Id = realEstate.Id;
-            City = realEstate.Address.City.Name;
-            Street = realEstate.Address.Street.Name;
+            City = realEstate.City;
+            Street = realEstate.Street;
             EstateUnits = estateUnits is null ? [] : estateUnits;
         }
     };
@@ -48,12 +48,6 @@ namespace RealEstates {
             get { return _estateUnit.Area; }
         }
         
-        public string Address {
-            get {
-                return $"{_estateUnit.RealEstate.Address.City.Name}, {_estateUnit.RealEstate.Address.Street.Name} {_estateUnit.RealEstate.Number}/{_estateUnit.Number}";
-            }
-        }
-
         public TenantDTO? CurrentTenant {
             get {
                 Tenant? tenant = _estateUnit.CurrentTenant();

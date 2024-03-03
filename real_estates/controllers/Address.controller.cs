@@ -5,7 +5,7 @@ namespace RealEstates.Controllers
 {
     public class AddressController : Controller
     {
-        private DBClient db = DBClient.GetInstance();
+        private DBClient db = new DBClient(null);
 
         [HttpGet("/streets")]
         public IActionResult Streets()

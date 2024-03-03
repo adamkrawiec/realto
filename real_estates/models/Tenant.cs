@@ -29,7 +29,7 @@ namespace RealEstates {
         }
 
         public Tenant? PreviousTenant() {
-          return DBClient.GetInstance().Tenants.FindAll(tenant => tenant.EstateUnit == EstateUnit).OrderBy(t => t.MovedInAt).ToList().Find(tenant => tenant.MovedOutAt < MovedInAt);}
+          return new DBClient(null).Tenants.FindAll(tenant => tenant.EstateUnit == EstateUnit).OrderBy(t => t.MovedInAt).ToList().Find(tenant => tenant.MovedOutAt < MovedInAt);}
     }
   }
 }

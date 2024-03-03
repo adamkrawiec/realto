@@ -1,19 +1,25 @@
-namespace RealEstates {
-  namespace Models {
-        public class RealEstate {
-        private static int _id = 0;
-        public int Id { get; }
-        public Address Address { get; set; }
-        public float Area { get; set; }
-        public int Number { get; set; }
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
-        public RealEstate(Address address, float area, int number) {
-            _id += 1;
-            Id = _id;
-            Address = address;
-            Area = area;
-            Number = number;
+namespace RealEstates {
+    namespace Models {
+        [PrimaryKey(nameof(Id))]
+        [Table("real_estates")]
+        public class RealEstate : DbContext {
+            public long Id { get; }
+            public float Area { get; set; }
+            public int Number { get; set; }
+            public string Street { get; set; }
+
+            public string City { get; set; }
+
+            public RealEstate(string city, string street, float area, int number) {
+                City = city;
+                Street = street;
+                Area = area;
+                Number = number;
+            }
         }
     }
-  }
 }

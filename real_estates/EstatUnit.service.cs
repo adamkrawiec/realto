@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RealEstates {
     class EstateUnitService {
-        readonly DBClient db = DBClient.GetInstance();
+        readonly DBClient db = new DBClient(null);
 
         public EstateUnitService() {
         }
