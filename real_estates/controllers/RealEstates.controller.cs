@@ -25,24 +25,24 @@ namespace RealEstates.Controllers
         [HttpGet]
         public IActionResult Index(string? cityName, string? streetName)
         {
-            List<RealEstateDTO> realEstates = _realEstateService.GetAllRealEstates();
+            List<RealEstateDTO> realEstates = _realEstateService.GetAllRealEstates(cityName, streetName);
             realEstates.ForEach(realEstate =>
-                realEstate.ShowPath = Url.Action("Show", "RealEstate", new { id = realEstate.Id })
+                realEstate.ShowPath = Url.Action("Show", "RealEstates", new { id = realEstate.Id })
             );
             
             return Ok(realEstates);
         }
 
-        [HttpGet("/{id}")]
-        public IActionResult Show(int id)
+        [HttpGet("/real_estates/{id}")]
+        public async Task<IActionResult> Show(long id)
         {
-            RealEstateDTO? realEstate = _realEstateService.PresentRealEstate(id);
+            RealEstateDTO? realEstate = await _realEstateService.PresentRealEstate(id);
 
             if (realEstate is null) return NotFound();
 
-            realEstate.EstateUnits.ForEach(estateUnit =>
-                estateUnit.ShowPath = Url.Action("Show", "EstateUnit", new { id = estateUnit.Id })
-            );
+            // realEstate.EstateUnits.ForEach(estateUnit =>
+            //     estateUnit.ShowPath = Url.Action("Show", "EstateUnit", new { id = estateUnit.Id })
+            // );
             return Ok(realEstate);
         }
     }

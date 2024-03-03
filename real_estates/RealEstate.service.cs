@@ -12,17 +12,17 @@ namespace RealEstates {
             _context = context;
         }
 
-        public List<RealEstateDTO> GetAllRealEstates () {
+        public List<RealEstateDTO> GetAllRealEstates (string? cityName, string? streetName) {
             List<RealEstate> realEstates = _context.RealEstates.ToList();
             return realEstates.Select(realEstate => new RealEstateDTO(realEstate, [])).ToList();
         }
 
-        public RealEstate? FindRealEstate(int realEstateId) {
-            return findRealEstate(realEstateId);
+        public async Task<RealEstate?> FindRealEstate(long realEstateId) {
+            return await findRealEstate(realEstateId);
         }
 
-        public RealEstateDTO? PresentRealEstate (int realEstateId) {
-            RealEstate? realEstate = findRealEstate(realEstateId);
+        public async Task<RealEstateDTO?> PresentRealEstate (long realEstateId) {
+            RealEstate? realEstate = await findRealEstate(realEstateId);
             
             if(realEstate == null)  return null;
             
@@ -46,8 +46,8 @@ namespace RealEstates {
             return new RealEstateDTO(realEstate);
         }
 
-        private RealEstate? findRealEstate(int realEstateId) {
-            return _context.RealEstates.Find(realEstateId);
+        private async Task<RealEstate?> findRealEstate(long realEstateId) {
+            return await _context.RealEstates.FindAsync(realEstateId);
         }
     }
 }
